@@ -1,0 +1,64 @@
+/*1..Write a query to display the member id, member name, city and membership status who are all having life time membership. Hint: Life time membership status is “Permanent”.*/
+
+SELECT MEMBER_ID, MEMBER_NAME, CITY, MEMBERSHIP_STATUS
+FROM LMS_MEMBERS
+WHERE MEMBERSHIP_STATUS = 'Permanent';
+
+/*2..Write a query to display the member id, member name who have not returned the books. Hint: Book return status is book_issue_status ='Y' or 'N'.*/
+
+SELECT M.MEMBER_ID, M.MEMBER_NAME
+FROM LMS_MEMBERS M
+JOIN LMS_BOOK_ISSUE B ON M.MEMBER_ID = B.MEMBER_ID
+WHERE B.DATE_RETURNED IS NULL;
+
+/*3..Write a query to display the member id, member name who have taken the book with book code 'BL000002'.
+*/
+
+SELECT M.MEMBER_ID, M.MEMBER_NAME
+FROM LMS_MEMBERS M
+JOIN LMS_BOOK_ISSUE B ON M.MEMBER_ID = B.MEMBER_ID
+WHERE B.BOOK_CODE = 'BL000002';
+
+/*4.Write a query to display the book code, book title and author of the books whose author name begins with 'P'.*/
+
+SELECT BOOK_CODE, BOOK_TITLE, AUTHOR
+FROM LMS_BOOK_DETAILS
+WHERE AUTHOR LIKE 'P%';
+
+/*5..Write a query to display the total number of Java books available in library with alias name ‘NO_OF_BOOKS’.*/
+
+SELECT COUNT(*) AS NO_OF_BOOKS
+FROM LMS_BOOK_DETAILS
+WHERE CATEGORY = 'JAVA';
+
+/*6..Write a query to list the category and number of books in each category with alias name ‘NO_OF_BOOKS’.*/
+
+SELECT CATEGORY, COUNT(*) AS NO_OF_BOOKS
+FROM LMS_BOOK_DETAILS
+GROUP BY CATEGORY;
+
+/*7..Write a query to display the number of books published by "Prentice Hall” with the alias name “NO_OF_BOOKS”.
+*/
+
+SELECT COUNT(*) AS NO_OF_BOOKS
+FROM LMS_BOOK_DETAILS
+WHERE PUBLICATION= "Prentice Hall";
+
+/*8..Write a query to display the book code, book title of the books which are issued on the date "1st April 2012".*/
+
+SELECT B.BOOK_CODE, D.BOOK_TITLE
+FROM LMS_BOOK_ISSUE B
+JOIN LMS_BOOK_DETAILS D ON B.BOOK_CODE = D.BOOK_CODE
+WHERE B.DATE_ISSUE = '2012-04-01';
+
+/*9..Write a query to display the supplier id, supplier name and email of the suppliers who are all having gmail account.*/
+
+SELECT SUPPLIER_ID, SUPPLIER_NAME, EMAIL
+FROM LMS_SUPPLIERS_DETAILS
+WHERE EMAIL LIKE '%@gmail.com';
+
+/*10..Write a query to display the total number of books available in the library with alias name “NO_OF_BOOKS_AVAILABLE” (Which is not issued). Hint: The issued books details are available in the LMS_BOOK_ISSUE table.*/
+
+SELECT COUNT(*) AS NO_OF_BOOKS_AVAILABLE
+FROM LMS_BOOK_DETAILS
+WHERE BOOK_CODE NOT IN (SELECT BOOK_CODE FROM LMS_BOOK_ISSUE);
