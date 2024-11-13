@@ -62,3 +62,155 @@ WHERE EMAIL LIKE '%@gmail.com';
 SELECT COUNT(*) AS NO_OF_BOOKS_AVAILABLE
 FROM LMS_BOOK_DETAILS
 WHERE BOOK_CODE NOT IN (SELECT BOOK_CODE FROM LMS_BOOK_ISSUE);
+
+/*11...Write a query to display the book code, book title and availability status of the ‘JAVA’ books whose edition is "6”Show the availability status with alias name “AVAILABILITYSTATUS”. Hint: Book availability status can be fetched from “BOOK_ISSUE_STATUS” column of LMS_BOOK_ISSUE table
+*/
+SELECT 
+    b.book_code, 
+    b.book_title, 
+    CASE 
+        WHEN i.BOOK_CODE IS NULL THEN 'Available'
+        ELSE 'Issued'
+    END AS AVAILABILITYSTATUS
+FROM 
+    LMS_BOOK_DETAILS b
+LEFT JOIN 
+    LMS_BOOK_ISSUE i ON b.BOOK_CODE = i.BOOK_CODE
+WHERE 
+    b.book_title LIKE '%JAVA%' 
+    AND b.BOOK_EDITION = 6;
+
+    
+/*12....Write a query to display the book code, book title and rack number of the books which are placed in rack 'A1' and sort by book title in ascending order.*/
+
+SELECT 
+    book_code, 
+    book_title, 
+    RACK_NUM
+FROM 
+    LMS_BOOK_DETAILS
+WHERE 
+    RACK_NUM = 'A1'
+ORDER BY 
+    book_title ASC;
+    
+    /*13..Write a query to display the member id, member name, due date and date returned of the members who has returned the books after the due date. Hint: Date_return is due date and Date_returned is actual book return date.*/
+    
+    SELECT 
+    m.MEMBER_ID, 
+    m.MEMBER_NAME, 
+    i.DATE_RETURN AS DUE_DATE, 
+    i.DATE_RETURNED AS ACTUAL_DATE
+FROM 
+    LMS_MEMBERS m
+JOIN 
+    LMS_BOOK_ISSUE i ON m.MEMBER_ID = i.MEMBER_ID
+WHERE 
+    i.DATE_RETURNED > i.DATE_RETURN;
+
+/*14..Write a query to display the member id, member name and date of registration who have not taken any book.*/
+
+SELECT m.MEMBER_ID, m.MEMBER_NAME, m.DATE_REGISTER
+FROM LMS_MEMBERS m
+LEFT JOIN LMS_BOOK_ISSUE i ON m.MEMBER_ID = i.MEMBER_ID
+WHERE i.MEMBER_ID IS NULL;
+
+/*15..Write a Query to display the member id and member name of the members who has not paid any fine in the year 2012.*/
+
+SELECT 
+    m.MEMBER_ID, 
+    m.MEMBER_NAME
+FROM 
+    LMS_MEMBERS m
+LEFT JOIN 
+    LMS_BOOK_ISSUE i ON m.MEMBER_ID = i.MEMBER_ID
+LEFT JOIN 
+    LMS_FINE_DETAILS f ON i.FINE_RANGE = f.FINE_RANGE
+WHERE 
+     (i.DATE_RETURNED IS NULL OR YEAR(i.DATE_RETURNED) != 2012)
+    OR (f.FINE_AMOUNT = 0);
+    
+/*16..Write a query to display the date on which the maximum numbers of books were issued and the number of books issued with alias name “NOOFBOOKS”.
+*/
+
+SELECT 
+    DATE_ISSUE, 
+    COUNT(*) AS NOOFBOOKS
+FROM 
+    LMS_BOOK_ISSUE
+GROUP BY 
+    DATE_ISSUE
+ORDER BY 
+    NOOFBOOKS DESC;
+    
+/*17..Write a query to list the book title and supplier id for the books authored by “Herbert Schildt" and the book edition is 5 and supplied by supplier ‘S01’.*/
+
+
+SELECT 
+    book_title, 
+    supplier_id
+FROM 
+    LMS_BOOK_DETAILS
+WHERE 
+    author = 'Herbert Schildt' 
+    AND book_edition = 5 
+    AND supplier_id = 'S01';
+    
+/*18..Write a query to display the rack number and the number of books in each rack with alias name “NOOFBOOKS” and sort by rack number in ascending order.*/
+
+SELECT 
+    RACK_NUM AS rack_number, 
+    COUNT(*) AS NOOFBOOKS
+FROM 
+    LMS_BOOK_DETAILS
+GROUP BY 
+    RACK_NUM
+ORDER BY 
+    RACK_NUM ASC;
+    
+/*19..Write a query to display book issue number, member name, date or registration, date of expiry, book title, category author, price, date of issue, date of return, actual returned date, issue status, fine amount.
+*/
+
+
+SELECT 
+    i.BOOK_ISSUE_NO, 
+    m.MEMBER_NAME, 
+    m.DATE_REGISTER, 
+    m.DATE_EXPIRE, 
+    b.BOOK_TITLE, 
+    b.CATEGORY, 
+    b.AUTHOR, 
+    b.PRICE, 
+    i.DATE_ISSUE, 
+    i.DATE_RETURN, 
+    i.DATE_RETURNED, 
+    CASE 
+        WHEN i.DATE_RETURNED IS NULL THEN 'Issued'
+        ELSE 'Returned'
+    END AS ISSUE_STATUS, 
+    f.FINE_AMOUNT
+FROM 
+    LMS_BOOK_ISSUE i
+JOIN 
+    LMS_MEMBERS m ON i.MEMBER_ID = m.MEMBER_ID
+JOIN 
+    LMS_BOOK_DETAILS b ON i.BOOK_CODE = b.BOOK_CODE
+    
+LEFT JOIN 
+    LMS_FINE_DETAILS f ON i.FINE_RANGE = f.FINE_RANGE;
+
+/*20..Write a query to display the book code, book title and availability status of the ‘JAVA’ books whose edition is "5”. Show the availability status with alias name “AVAILABILITYSTATUS”. Hint: Book availability status can be fetched from “BOOK_ISSUE_STATUS” column of LMS_BOOK_ISSUE table*/
+SELECT 
+    b.book_code, 
+    b.book_title, 
+    CASE 
+        WHEN i.BOOK_CODE IS NULL THEN 'Available'
+        ELSE 'Issued'
+    END AS AVAILABILITYSTATUS
+FROM 
+    LMS_BOOK_DETAILS b
+LEFT JOIN 
+    LMS_BOOK_ISSUE i ON b.BOOK_CODE = i.BOOK_CODE
+WHERE 
+    b.book_title LIKE '%JAVA%' 
+    AND b.BOOK_EDITION = 5;
